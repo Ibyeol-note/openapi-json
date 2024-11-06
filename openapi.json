@@ -25,25 +25,23 @@
                 "properties": {
                     "accessToken": {
                         "type": "string",
-                        "nullable": false,
                         "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
                     },
                     "refreshToken": {
                         "type": "string",
-                        "nullable": false,
-                        "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                        "example": "This is a post content"
                     },
                     "accessTokenExp": {
                         "type": "string",
                         "format": "date-time",
-                        "nullable": false,
+                        "nullable": true,
                         "example": "2024-10-23T09:00:00Z"
                     },
                     "refreshTokenExp": {
                         "type": "string",
                         "format": "date-time",
-                        "nullable": false,
-                        "example": "2024-10-23T09:00:00Z"
+                        "nullable": true,
+                        "example": null
                     }
                 }
             },
@@ -86,15 +84,25 @@
                 "type": "object",
                 "required": ["content"],
                 "properties": {
+                    "content": {
+                        "type": "string",
+                        "example": "New post content"
+                    }
+                }
+            },
+            "UpdatePostDto": {
+                "type": "object",
+                "required": ["content"],
+                "properties": {
                     "title": {
                         "type": "string",
-                        "required": true,
-                        "example": "게시글 제목"
+                        "required": false,
+                        "example": "게시글 제목 수정"
                     },
                     "content": {
                         "type": "string",
-                        "required": true,
-                        "example": "게시글 내용"
+                        "required": false,
+                        "example": "게시글 내용 수정"
                     }
                 }
             }
@@ -141,6 +149,32 @@
                 "responses": {
                     "201": {
                         "description": "게시글 작성 성공",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "게시글 수정",
+                "tags": ["Posts"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePostDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "게시글 수정 성공",
                         "content": {
                             "application/json": {
                                 "schema": {
