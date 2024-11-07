@@ -15,6 +15,7 @@
                 "schema": {
                     "type": "string",
                     "enum": ["NAVER", "KAKAO", "GOOGLE", "APPLE"],
+                    "description": "네이버 / 카카오 / 구글 / 애플",
                     "example": "KAKAO"
                 }
             }
