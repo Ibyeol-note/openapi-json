@@ -7,8 +7,8 @@
     },
     "components": {
         "parameters": {
-            "LoginMehtod": {
-                "name": "LoginMehtod",
+            "LoginMethod": {
+                "name": "LoginMethod",
                 "in": "path",
                 "required": true,
                 "description": "로그인 방법",
@@ -112,7 +112,7 @@
         "/auth/{LoginMethod}": {
             "parameters": [
                 {
-                    "$ref": "#/components/parameters/LoginMehtod"
+                    "$ref": "#/components/parameters/LoginMethod"
                 }
             ],
             "post": {
