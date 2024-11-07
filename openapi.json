@@ -60,7 +60,7 @@
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2024-10-22T08:42:00Z"
+                        "example": "2024-10-22T09:00:00Z"
                     },
                     "updatedAt": {
                         "type": "string",
