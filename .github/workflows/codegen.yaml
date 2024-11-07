@@ -2,8 +2,8 @@ name: OpenAPI-Codegen
 on:
     push:
         branches: [main]
-        # paths:
-        #     - "openapi.json" # openapi.json 파일이 변경될 때만 실행
+        paths:
+            - "openapi.json" # openapi.json 파일이 변경될 때만 실행
     workflow_dispatch:
 
 jobs:
