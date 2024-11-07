@@ -49,7 +49,7 @@ jobs:
             - name: Commit and push changes
               run: |
                   cd server
-                  git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                  git config --local user.email "github-actions[bot]@github.com"
                   git config --local user.name "github-actions[bot]"
                   git add .
                   git commit -m "chore: update generated API client" || echo "No changes to commit"
