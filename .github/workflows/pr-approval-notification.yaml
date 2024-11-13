@@ -1,0 +1,106 @@
+name: PR 승인 알림
+on:
+    pull_request_review:
+        types: [submitted]
+
+env:
+    REQUIRED_APPROVALS: 2
+
+jobs:
+    notify_slack:
+        runs-on: ubuntu-latest
+        if: github.event.pull_request.merged == false
+
+        steps:
+            - name: 승인 확인
+              id: approval_check
+              uses: actions/github-script@v6
+              with:
+                  script: |
+                      const { data: reviews } = await github.rest.pulls.listReviews({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        pull_number: context.payload.pull_request.number,
+                      });
+
+                      // 각 리뷰어의 최신 리뷰만 고려
+                      const latestReviews = new Map();
+                      reviews.forEach(review => {
+                        latestReviews.set(review.user.id, review);
+                      });
+
+                      const approved_reviews = Array.from(latestReviews.values())
+                        .filter(review => review.state === 'APPROVED');
+
+                      // 승인한 리뷰어 이름들 수집
+                      const approvers = approved_reviews.map(review => review.user.login).join(', ');
+
+                      core.setOutput("approved_count", approved_reviews.length);
+                      core.setOutput("approvers", approvers);
+
+            - name: Slack 알림 전송
+              if: steps.approval_check.outputs.approved_count == env.REQUIRED_APPROVALS
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+              run: |
+                  RESPONSE=$(curl --max-time 10 -X POST \
+                    -H 'Content-type: application/json' \
+                    --data '{
+                      "blocks": [
+                        {
+                          "type": "section",
+                          "text": {
+                            "type": "mrkdwn",
+                            "text": ":white_check_mark: *PR 머지 준비 완료!*\n<${{ github.event.pull_request.html_url }}|#${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}>"
+                          }
+                        },
+                        {
+                          "type": "section",
+                          "fields": [
+                            {
+                              "type": "mrkdwn",
+                              "text": "*작성자:*\n${{ github.event.pull_request.user.login }}"
+                            },
+                            {
+                              "type": "mrkdwn",
+                              "text": "*승인자:*\n${{ steps.approval_check.outputs.approvers }}"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "context",
+                          "elements": [
+                            {
+                              "type": "mrkdwn",
+                              "text": "필요한 승인 수(${{ env.REQUIRED_APPROVALS }}개)가 모두 충족되었습니다. 이제 PR을 머지할 수 있습니다."
+                            }
+                          ]
+                        }
+                      ]
+                    }' \
+                    -w "%{http_code}" -o /dev/null \
+                    $SLACK_WEBHOOK_URL)
+
+                  if [ "$RESPONSE" != "200" ]; then
+                    echo "Slack 알림 전송 실패"
+                    exit 1
+                  fi
+
+            - name: 알림 전송 실패 시 이슈 생성
+              if: failure()
+              uses: actions/github-script@v6
+              with:
+                  script: |
+                      await github.rest.issues.create({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        title: '🚨 PR 승인 알림 전송 실패',
+                        body: `PR #${{ github.event.pull_request.number }} 의 Slack 알림 전송이 실패했습니다.
+                        
+                        ### 상세 정보
+                        - PR: #${{ github.event.pull_request.number }}
+                        - 제목: ${{ github.event.pull_request.title }}
+                        - 작성자: ${{ github.event.pull_request.user.login }}
+                        
+                        Slack 웹훅 설정을 확인해주세요.`
+                      });
