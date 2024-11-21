@@ -225,32 +225,6 @@
                         }
                     }
                 }
-            },
-            "put": {
-                "summary": "게시글 수정",
-                "tags": ["Posts"],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreatePostDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "게시글 작성 성공",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Post"
-                                }
-                            }
-                        }
-                    }
-                }
             }
         },
         "/post/{id}": {
@@ -282,6 +256,32 @@
                     },
                     "404": {
                         "description": "게시글을 찾을 수 없음"
+                    }
+                }
+            },
+            "put": {
+                "summary": "게시글 수정",
+                "tags": ["Posts"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePostDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "게시글 수정 성공",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
                     }
                 }
             }
