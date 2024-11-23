@@ -46,6 +46,10 @@ jobs:
                     --ignore-file-override ./openapi/ignore/.openapi-generator-ignore \
                     --skip-validate-spec
 
+            - name: Copy openapi.json to server repository
+              run: |
+                  cp openapi-json/openapi.json server/openapi/openapi.json
+
             - name: Commit and push changes
               run: |
                   cd server
