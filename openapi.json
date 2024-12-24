@@ -684,10 +684,10 @@
                 }
             }
         },
-        "/post/{postId}/ai-answer": {
+        "/note/{noteId}/ai-answer": {
             "get": {
                 "summary": "게시글에 대한 AI 답변 조회",
-                "tags": ["AIAnswer"],
+                "tags": ["Note"],
                 "schema": {
                     "type": "string",
                     "example": "Bearer <your-access-token>"
