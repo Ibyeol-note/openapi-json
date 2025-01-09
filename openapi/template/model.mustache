@@ -1,6 +1,7 @@
 {{#models}}
 {{#model}}
 import { IsOptional, IsString, IsNumber, IsEmail, IsDate, Matches, Min, Max, MinLength, MaxLength } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class {{classname}} { {{#vars}}
     {{#description}}/** {{{description}}} */{{/description}}
@@ -14,6 +15,7 @@ export class {{classname}} { {{#vars}}
     {{#minLength}}@MinLength({{minLength}}){{/minLength}}
     {{#maxLength}}@MaxLength({{maxLength}}){{/maxLength}}
     {{#isOptional}}@IsOptional(){{/isOptional}}
+    @Expose()
     {{name}}: {{{dataType}}};{{/vars}}
 }
 {{#vars}}
